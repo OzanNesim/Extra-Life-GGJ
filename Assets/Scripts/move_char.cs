@@ -8,7 +8,7 @@ public class move_char : MonoBehaviour
     public float gravity = -5;
 
     float velocityY = 0;
-   public float ziplama_hizi = 10;
+    public float ziplama_hizi = 10;
 
     CharacterController controller;
 
@@ -23,7 +23,7 @@ public class move_char : MonoBehaviour
 
         Vector3 input = new Vector3(Input.GetAxisRaw("Horizontal"), 0, Input.GetAxisRaw("Vertical"));
         input = input.normalized;
-        Debug.Log(input);
+        //Debug.Log(input);
         Vector3 temp = input;//Vector3.zero;
         /*
         if (input.z == 1)
@@ -51,6 +51,7 @@ public class move_char : MonoBehaviour
                 velocityY += ziplama_hizi ;
             }
         }
+
         Vector3 velocity = temp * speed;
         velocity.y = velocityY;
 

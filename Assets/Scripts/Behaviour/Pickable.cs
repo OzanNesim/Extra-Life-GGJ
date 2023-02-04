@@ -15,22 +15,56 @@ public class Pickable:MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
+
+        var container = other.GetComponentInParent<Container>();
         
-        if (IsPickable && other.TryGetComponent(out Container container))
+        if (IsPickable && container)
         {
-            Debug.Log("Picked Up");
-            
-            StartCoroutine(PickupSequence( container));
+
+            HandlePickup(container);
+
         }
         
     }
+    
+    private void OnCollisionEnter(Collision collision)
+    {
+        
+        var other = collision.collider;
+        var container = other.GetComponentInParent<Container>();
 
+        if (IsPickable && container)
+        {
+            HandlePickup(container);
+        }
+    }
+    
+    virtual protected void HandlePickup(Container container)
+    {
+        StartCoroutine(PickupSequence(container));
+    }
+    
     private IEnumerator PickupSequence(Container container)
     {
         Container = container;
         IsPickable = false;
         PickedUp.Invoke();
-        
+
+        gameObject.layer = LayerMask.NameToLayer("No Collision");
+
+        //var children = GetComponentsInChildren<Transform>(includeInactive: true);
+
+        foreach (Transform child in transform)
+        {
+   
+            child.gameObject.layer = LayerMask.NameToLayer("No Collision");
+        }
+
+
+        if (TryGetComponent(out Rigidbody rigidbody))
+        {
+            rigidbody.isKinematic = true;
+        }
 
         transform.SetParent(null);
 
@@ -39,6 +73,8 @@ public class Pickable:MonoBehaviour
 
         yield return transform.DOLocalJump(Vector3.zero, JumpPower, 1, Speed).SetSpeedBased().WaitForCompletion();
 
+        Destroy(this);
+        
     }
 
 }
