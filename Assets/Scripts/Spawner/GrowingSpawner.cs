@@ -37,7 +37,7 @@ public class GrowingSpawner : MonoBehaviour
 
         spawnee.transform.parent = null;
 
-        spawnee.transform.DOShakeScale(0.5f);
+        spawnee.transform.DOShakeScale(0.5f,0.3f);
 
         if (rigidbody)
         {

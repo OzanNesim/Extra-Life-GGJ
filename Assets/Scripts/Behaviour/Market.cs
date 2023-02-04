@@ -6,6 +6,13 @@ using UnityEngine;
 public class Market : MonoBehaviour
 {
 
+    private Economy _economy;
+
+    private void Awake()
+    {
+        _economy = FindFirstObjectByType<Economy>();
+    }
+
     private void OnTriggerEnter(Collider other)
     {
 
@@ -31,6 +38,15 @@ public class Market : MonoBehaviour
     {
         var target = sellable.transform;
         var value = sellable.Value;
+
+        if (sellable.TryGetComponent(out Container container))
+        {
+            if (container.Item == sellable.gameObject)
+            {
+                container.Item = null;
+            }
+        }
+
         Destroy(sellable);
 
 
@@ -44,6 +60,9 @@ public class Market : MonoBehaviour
         yield return target.DOLocalJump(Vector3.zero, 1f, 1, 1f).SetSpeedBased().WaitForCompletion();
 
         Debug.Log("Made Money:" + value);
+        Destroy(target.gameObject);
+
+        _economy.Money += value;
     }
 
 }

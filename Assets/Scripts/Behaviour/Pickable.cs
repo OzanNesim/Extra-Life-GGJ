@@ -7,18 +7,24 @@ public class Pickable:MonoBehaviour
 {
 
     public bool IsPickable = true;
-    public UnityEvent PickedUp;
+    public bool OnCooldown = false;
+
     public Container Container = null;
+
+    public ItemType Type;
 
     public float JumpPower = 1f;
     public float Speed = 1f;
+    public float CooldownTime = 2f;
+
+
 
     private void OnTriggerEnter(Collider other)
     {
 
         var container = other.GetComponentInParent<Container>();
         
-        if (IsPickable && container)
+        if (IsPickable && container && !OnCooldown)
         {
 
             HandlePickup(container);
@@ -33,7 +39,7 @@ public class Pickable:MonoBehaviour
         var other = collision.collider;
         var container = other.GetComponentInParent<Container>();
 
-        if (IsPickable && container)
+        if (IsPickable && container && !OnCooldown)
         {
             HandlePickup(container);
         }
@@ -41,40 +47,35 @@ public class Pickable:MonoBehaviour
     
     virtual protected void HandlePickup(Container container)
     {
-        StartCoroutine(PickupSequence(container));
+        if (!container.Pick(this))
+        {
+            PutOnCooldown();
+        }
+
     }
-    
-    private IEnumerator PickupSequence(Container container)
+
+    public void PutOnCooldown()
     {
-        Container = container;
-        IsPickable = false;
-        PickedUp.Invoke();
+        OnCooldown = true;
 
-        gameObject.layer = LayerMask.NameToLayer("No Collision");
+        Invoke(nameof(ResetCooldown), CooldownTime);
 
-        //var children = GetComponentsInChildren<Transform>(includeInactive: true);
+        var rigidbody = GetComponentInParent<Rigidbody>();
 
-        foreach (Transform child in transform)
+        if (rigidbody)
         {
-   
-            child.gameObject.layer = LayerMask.NameToLayer("No Collision");
+            rigidbody.AddForce(Vector3.up * 5f, ForceMode.VelocityChange);
+            rigidbody.isKinematic = false;
         }
-
-
-        if (TryGetComponent(out Rigidbody rigidbody))
-        {
-            rigidbody.isKinematic = true;
-        }
-
-        transform.SetParent(null);
-
-        transform.SetParent(container.transform);
-        container.Item = gameObject;
-
-        yield return transform.DOLocalJump(Vector3.zero, JumpPower, 1, Speed).SetSpeedBased().WaitForCompletion();
-
-        Destroy(this);
-        
+    }
+    private void ResetCooldown()
+    {
+        OnCooldown = false;
     }
 
+}
+
+public enum ItemType
+{
+    Empty,Fruit,Pickaxe,Bucket
 }
