@@ -1,0 +1,25 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.AI;
+
+public class enemy_walks : MonoBehaviour
+{
+    // Start is called before the first frame update
+    
+   
+    public Transform player;
+    private NavMeshAgent navMeshAgent;
+
+    
+    void Start()
+    {
+        navMeshAgent = GetComponent<NavMeshAgent>();
+    }
+
+    void Update()
+    {
+        navMeshAgent.destination = player.position;
+    }
+
+}
