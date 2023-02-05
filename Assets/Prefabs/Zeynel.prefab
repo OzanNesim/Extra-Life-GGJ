@@ -132,6 +132,7 @@ GameObject:
   - component: {fileID: 165993335102798732}
   - component: {fileID: 5179995634875910203}
   - component: {fileID: 7891057393339149028}
+  - component: {fileID: 6260073829607877987}
   m_Layer: 0
   m_Name: Zeynel
   m_TagString: Untagged
@@ -232,6 +233,19 @@ MonoBehaviour:
   Item: {fileID: 0}
   Location: {fileID: 4015283483906861000}
   OnCooldown: 0
+--- !u!114 &6260073829607877987
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4280835450835546443}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5a76df8b1a9b8414299de5d2edd880c2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _moneyTextUI: {fileID: 0}
 --- !u!1001 &1484285395525638516
 PrefabInstance:
   m_ObjectHideFlags: 0

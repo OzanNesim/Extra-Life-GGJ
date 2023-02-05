@@ -2,6 +2,7 @@ using DG.Tweening;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.Events;
+using static UnityEditor.Progress;
 
 public class Pickable:MonoBehaviour
 {
@@ -53,10 +54,12 @@ public class Pickable:MonoBehaviour
         }
 
     }
-
+    
     public void PutOnCooldown()
     {
-        OnCooldown = true;
+
+        StartCoroutine(CooldownCycle());
+        /*OnCooldown = true;
 
         Invoke(nameof(ResetCooldown), CooldownTime);
 
@@ -64,13 +67,67 @@ public class Pickable:MonoBehaviour
 
         if (rigidbody)
         {
-            rigidbody.AddForce(Vector3.up * 5f, ForceMode.VelocityChange);
+            rigidbody.AddForce(Vector3.up * 2f, ForceMode.VelocityChange);
+            rigidbody.isKinematic = true;
+        }
+
+        gameObject.layer = LayerMask.NameToLayer("NoCol");
+
+        foreach (Transform child in transform)
+        {
+
+            child.gameObject.layer = LayerMask.NameToLayer("NoCol");
+        }*/
+
+    }
+
+    private IEnumerator CooldownCycle()
+    {
+        OnCooldown = true;
+
+        var rigidbody = GetComponentInParent<Rigidbody>();
+
+        if (rigidbody)
+        {
+            rigidbody.isKinematic = true;
+        }
+        /*
+        gameObject.layer = LayerMask.NameToLayer("NoCol");
+
+        foreach (Transform child in transform)
+        {
+
+            child.gameObject.layer = LayerMask.NameToLayer("NoCol");
+        }*/
+
+        yield return transform.DOLocalJump(transform.position,2f,1,CooldownTime).WaitForCompletion();
+
+        if (rigidbody)
+        {
             rigidbody.isKinematic = false;
         }
+        /*
+        gameObject.layer = LayerMask.NameToLayer("Default");
+
+        foreach (Transform child in transform)
+        {
+
+            child.gameObject.layer = LayerMask.NameToLayer("Default");
+        }
+        */
+
+
+        OnCooldown = false;
     }
+
     private void ResetCooldown()
     {
-        OnCooldown = false;
+        /*
+        var rigidbody = GetComponentInParent<Rigidbody>();
+
+
+
+        OnCooldown = false;*/
     }
 
 }

@@ -21,7 +21,10 @@ public class move_char : MonoBehaviour
     {
         velocityY += gravity * Time.deltaTime;
 
-        Vector3 input = new Vector3(Input.GetAxisRaw("Horizontal"), 0, Input.GetAxisRaw("Vertical"));
+        //Vector3 input = new Vector3(Input.GetAxisRaw("Horizontal"), 0, Input.GetAxisRaw("Vertical"));
+
+        Vector3 input = transform.right*Input.GetAxisRaw("Horizontal") + transform.forward* Input.GetAxisRaw("Vertical");
+
         input = input.normalized;
         //Debug.Log(input);
         Vector3 temp = input;//Vector3.zero;

@@ -17,7 +17,8 @@ public class Container : MonoBehaviour
 
         if (!Item)
         {
-            PickupSequence(PickableItem);
+            //PickupSequence(PickableItem);
+            StartCoroutine(PickupSequence(PickableItem));
             return true;
         }
         else
@@ -29,17 +30,10 @@ public class Container : MonoBehaviour
                 Item.PutOnCooldown();
                 Item.IsPickable = true;
 
-                Item.gameObject.layer = LayerMask.NameToLayer("Default");
 
-                foreach (Transform child in Item.transform)
-                {
 
-                    child.gameObject.layer = LayerMask.NameToLayer("Default");
-                }
-
-                Item = null;
-
-                PickupSequence(PickableItem);
+                //StartCoroutine(PickupSequence(PickableItem));
+                StartCoroutine(PickupSequence(PickableItem));
 
                 return true;
             }
@@ -50,10 +44,12 @@ public class Container : MonoBehaviour
     }
 
 
-    private void PickupSequence(Pickable Item)
+    private IEnumerator PickupSequence(Pickable Item)
     {
 
         Item.IsPickable = false;
+
+        /*
         Item.gameObject.layer = LayerMask.NameToLayer("No Collision");
 
         foreach (Transform child in Item.transform)
@@ -61,7 +57,7 @@ public class Container : MonoBehaviour
 
             child.gameObject.layer = LayerMask.NameToLayer("No Collision");
         }
-
+        */
 
         if (Item.TryGetComponent(out Rigidbody rigidbody))
         {
@@ -71,8 +67,15 @@ public class Container : MonoBehaviour
         Item.transform.SetParent(Location.transform);
         this.Item = Item;
 
-        Item.transform.DOLocalJump(Vector3.zero, 1, 1, 1).SetSpeedBased().WaitForCompletion();
         PutOnCooldown();
+
+        //Item.transform.DOLocalJump(Vector3.zero, 1, 1, 1).SetSpeedBased().WaitForCompletion();
+
+       // yield return Item.transform.DOLocalJump(Vector3.zero, 1, 1, 1).SetSpeedBased().WaitForCompletion();
+
+        var seq = Item.transform.DOLocalJump(Vector3.zero, 1, 1, 1).SetSpeedBased();
+        yield return seq.Join(Item.transform.DOLocalRotate(Vector3.zero, 1)).WaitForCompletion();
+        
     }
 
     public void PutOnCooldown()
